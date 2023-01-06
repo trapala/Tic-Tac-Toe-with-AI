@@ -8,8 +8,7 @@ import java.util.Scanner;
  */
 public class Main {
     // Define named constants for:
-    //  1. Player: using CROSS
-    //  2. Computer using NOUGHT
+    //  1. currentPlayer: using CROSS or NOUGHT
     //  2. Cell contents: using CROSS, NOUGHT and NO_SEED
     public static final int CROSS = 0;
     public static final int NOUGHT = 1;
