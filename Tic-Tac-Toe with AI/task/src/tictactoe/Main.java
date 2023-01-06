@@ -1,5 +1,6 @@
 package tictactoe;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -21,6 +22,10 @@ public class Main {
     // The current player
     public static int currentPlayer;  // CROSS, NOUGHT
 
+    // Two options are possible to play: human or AI
+    public static boolean isHumanPlayer1;
+    public static boolean isHumanPlayer2;
+
     // Define named constants to represent the various states of the game
     public static final int PLAYING = 0;
     public static final int DRAW = 1;
@@ -36,37 +41,38 @@ public class Main {
      */
     public static void main(String[] args) {
         /*
-         * stage 1
+         * stage 3
          */
-        // Initialize the board, currentState and currentPlayer
-        initGame();
+        // menu loop
+        String exit = "exit";
+        String commands = null;
 
-        // First display empty board
-        paintBoard();
-
-        // Play the game once
         do {
-            // Player makes a move and Computer makes random move
-            // Update board[selectedRow][selectedCol] and currentState
-            if (currentPlayer == CROSS) {
-                stepGame();
-            } else {
-                computerTurn();
+            String whoPlayCross = null;
+            String whoPlayNought = null;
+            boolean isNull = false;
+
+            while (!isNull) {
+                try {
+                    System.out.print("Input command: ");
+                    String[] menuInput = in.nextLine().split("\\s");
+                    commands = menuInput[0];
+                    if ("exit".equals(commands)) {
+                        System.exit(0);
+                    }
+                    whoPlayCross = menuInput[1];
+                    whoPlayNought = menuInput[2];
+                    isNull = true;
+
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.out.println("Bad parameters!");
+                }
             }
 
-            // Refresh the display
-            paintBoard();
-            // Print message if game over
-            if (currentState == CROSS_WON) {
-                System.out.println("X wins");
-            } else if (currentState == NOUGHT_WON) {
-                System.out.println("O wins");
-            } else if (currentState == DRAW) {
-                System.out.println("Draw");
+            if (commands.equals("start")) {
+                manageGame(whoPlayCross, whoPlayNought);
             }
-            // Switch currentPlayer
-            currentPlayer = (currentPlayer == CROSS) ? NOUGHT : CROSS;
-        } while (currentState == PLAYING); // repeat if not game over
+        } while (!Objects.equals(exit, commands));
     }
 
     /**
@@ -201,5 +207,49 @@ public class Main {
             case NOUGHT -> System.out.print("O ");
             case NO_SEED -> System.out.print("  ");
         }
+    }
+
+    public static void manageGame(String whoPlayCross, String whoPlayNought) {
+        // Initialize the board, currentState and currentPlayer
+        initGame();
+
+        // First display empty board
+        paintBoard();
+
+        isHumanPlayer1 = "user".equals(whoPlayCross);
+        isHumanPlayer2 = "user".equals(whoPlayNought);
+
+        // Play the game once
+        do {
+            // Player makes a move and Computer makes random move
+            // Update board[selectedRow][selectedCol] and currentState
+
+            if (currentPlayer == CROSS) {
+                if (isHumanPlayer1) {
+                    stepGame();
+                } else {
+                    computerTurn();
+                }
+            } else {
+                if (isHumanPlayer2) {
+                    stepGame();
+                } else {
+                    computerTurn();
+                }
+            }
+
+            // Refresh the display
+            paintBoard();
+            // Print message if game over
+            if (currentState == CROSS_WON) {
+                System.out.println("X wins");
+            } else if (currentState == NOUGHT_WON) {
+                System.out.println("O wins");
+            } else if (currentState == DRAW) {
+                System.out.println("Draw");
+            }
+            // Switch currentPlayer
+            currentPlayer = (currentPlayer == CROSS) ? NOUGHT : CROSS;
+        } while (currentState == PLAYING); // repeat if not game over
     }
 }
